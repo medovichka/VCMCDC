@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Modpack Builder — настройки</title>
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --surface: #141817;
+    --surface2: #1c201e;
+    --border: #2a3030;
+    --green: #4ade80;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --muted: #6b7280;
+    --text: #e2e8e4;
+    --text2: #9ca3a0;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 28px;
+    max-width: 640px;
+  }
+  h1 { font-size: 18px; color: var(--green); margin-bottom: 4px; letter-spacing: 0.5px; }
+  .sub { color: var(--muted); font-size: 11px; margin-bottom: 24px; }
+
+  fieldset {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  legend { color: var(--muted); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; padding: 0 6px; }
+
+  label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+  input[type="text"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 9px 12px;
+    font-family: var(--mono);
+    font-size: 13px;
+    outline: none;
+  }
+  input[type="text"]:focus { border-color: var(--green); }
+
+  .row { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+
+  button {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+  button:hover { border-color: var(--green); color: var(--green); }
+  button.primary { background: var(--green); color: #000; border-color: var(--green); }
+  button.primary:hover { background: #86efac; color: #000; }
+
+  .status { font-size: 11px; margin-top: 10px; min-height: 16px; color: var(--muted); }
+  .status.ok { color: var(--green); }
+  .status.err { color: var(--red); }
+
+  .hint { font-size: 11px; color: var(--muted); line-height: 1.7; }
+  .hint code { color: var(--green); background: var(--surface2); padding: 1px 5px; border: 1px solid var(--border); }
+  kbd {
+    background: var(--surface2); border: 1px solid var(--border); border-bottom-width: 2px;
+    padding: 1px 6px; font-family: var(--mono); font-size: 11px; color: var(--text);
+  }
+</style>
+</head>
+<body>
+
+<h1>⛏ Modpack Builder — настройки</h1>
+<div class="sub">Расширение добавляет моды, датапаки, шейдеры и ресурспаки с Modrinth в локальную сборку одним кликом.</div>
+
+<fieldset>
+  <legend>Адрес приложения</legend>
+  <label for="apiInput">Куда обращаться за коллекцией</label>
+  <input type="text" id="apiInput" spellcheck="false" autocomplete="off" placeholder="http://localhost:7842">
+  <div class="row">
+    <button class="primary" id="saveBtn" type="button">Сохранить</button>
+    <button id="testBtn" type="button">Проверить связь</button>
+    <button id="resetBtn" type="button">По умолчанию</button>
+  </div>
+  <div class="status" id="statusLine"></div>
+  <div class="hint" style="margin-top:10px">
+    Приложение по умолчанию слушает <code>localhost:7842</code>. Если порт занят, запусти его иначе —
+    <code>python app.py --port 8080</code> — и укажи здесь тот же адрес.
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Горячая клавиша</legend>
+  <div class="hint">
+    <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd> — добавить открытую страницу проекта в сборку.
+    Изменить сочетание можно на странице управления расширениями.
+  </div>
+  <div class="row">
+    <button id="keysBtn" type="button">Настроить сочетания</button>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Как пользоваться</legend>
+  <div class="hint">
+    • На странице проекта внизу справа появляется кнопка «Добавить».<br>
+    • В списках и поиске у каждой карточки — значок <b>+ ⛏</b>.<br>
+    • Правый клик по ссылке или по странице → «Добавить в Modpack Builder».<br>
+    • Клик по иконке расширения открывает список коллекции.
+  </div>
+</fieldset>
+
+<script src="options.js"></script>
+</body>
+</html>

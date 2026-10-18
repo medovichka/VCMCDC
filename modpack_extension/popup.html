@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Modpack Builder</title>
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --surface: #141817;
+    --surface2: #1c201e;
+    --border: #2a3030;
+    --green: #4ade80;
+    --green-dim: #052e16;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --muted: #6b7280;
+    --text: #e2e8e4;
+    --text2: #9ca3a0;
+    /* Системный моноширинный стек вместо внешнего шрифта Google Fonts */
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    width: 320px;
+    min-height: 200px;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--green);
+    flex: 1;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: background 0.3s;
+  }
+  .status-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+  .status-text {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+  .status-text.online { color: var(--green); }
+
+  .icon-btn {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 5px;
+    line-height: 1;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .icon-btn:hover { color: var(--green); border-color: var(--border); }
+
+  .body { padding: 14px; }
+
+  /* Быстрое добавление по slug или ссылке */
+  .quick {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .quick input {
+    flex: 1;
+    min-width: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 9px;
+    font-family: var(--mono);
+    font-size: 11px;
+    outline: none;
+  }
+  .quick input:focus { border-color: var(--green); }
+  .quick input::placeholder { color: var(--muted); }
+  .quick button {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 11px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .quick button:hover { border-color: var(--green); color: var(--green); }
+  .quick button:disabled { opacity: 0.5; cursor: progress; }
+
+  /* Stats row */
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px;
+    text-align: center;
+  }
+  .stat-n {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green);
+    line-height: 1;
+  }
+  .stat-l {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .version-line {
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .version-line b { color: var(--yellow); font-weight: 600; }
+
+  /* Mod list */
+  .mod-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 210px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+  }
+  .mod-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .mod-row img {
+    width: 20px; height: 20px;
+    image-rendering: pixelated;
+    flex: 0 0 auto;
+  }
+  .mod-icon-fallback {
+    width: 20px;
+    text-align: center;
+    flex: 0 0 auto;
+  }
+  .mod-row-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 11px;
+  }
+  .mod-row-type {
+    font-size: 9px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0 3px;
+    flex: 0 0 auto;
+  }
+  .mod-row-remove {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 4px;
+    transition: color 0.15s;
+  }
+  .mod-row-remove:hover { color: var(--red); }
+  .mod-row-remove:disabled { opacity: 0.5; cursor: progress; }
+
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 20px 0;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  /* Buttons */
+  .btn-row { display: flex; gap: 6px; }
+
+  button.action {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    text-align: center;
+  }
+  button.action:hover { border-color: var(--green); color: var(--green); }
+  button.action.primary { background: var(--green); color: #000; border-color: var(--green); }
+  button.action.primary:hover { background: #86efac; }
+
+  .offline-msg,
+  .msg-line {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .msg-line {
+    border-left-color: var(--red);
+    color: var(--red);
+    word-break: break-word;
+  }
+  .msg-line.ok { border-left-color: var(--green); color: var(--green); }
+  .msg-line.warn { border-left-color: var(--yellow); color: var(--yellow); }
+  .offline-msg code {
+    color: var(--green);
+    font-size: 10px;
+  }
+
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⛏ Modpack Builder</div>
+  <div class="status-dot" id="statusDot"></div>
+  <div class="status-text" id="statusText">проверка…</div>
+  <button class="icon-btn" id="btnOptions" type="button" title="Настройки">⚙</button>
+</header>
+
+<div class="body">
+  <div id="offlineMsg" class="offline-msg" style="display:none">
+    Запусти приложение: <code>python app.py</code><br>
+    Другой порт? Укажи адрес в <b>⚙ настройках</b>.
+  </div>
+
+  <div id="msgLine" class="msg-line" style="display:none"></div>
+
+  <div id="onlineContent" style="display:none">
+    <div class="quick">
+      <input type="text" id="quickInput" spellcheck="false" autocomplete="off" placeholder="slug или ссылка Modrinth…">
+      <button id="quickAdd" type="button" title="Добавить в сборку">+</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-n" id="statMods">0</div><div class="stat-l">Модов</div></div>
+      <div class="stat"><div class="stat-n" id="statVersions" style="color:var(--yellow)">0</div><div class="stat-l">Версий MC</div></div>
+      <div class="stat"><div class="stat-n" id="statLoaders" style="color:#60a5fa">—</div><div class="stat-l">Ядро</div></div>
+    </div>
+
+    <div class="version-line" id="versionLine" style="display:none">
+      Лучшая версия MC: <b id="versionValue">—</b>
+    </div>
+
+    <div class="mod-list" id="modList"></div>
+
+    <div class="btn-row">
+      <button class="action primary" id="btnOpen" type="button">↗ Открыть</button>
+      <button class="action" id="btnClear" type="button">🗑 Очистить</button>
+    </div>
+  </div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modpack Builder</title>
+
+<!-- Шрифты грузятся неблокирующе: интерфейс рисуется сразу на системном моноширинном,
+     а фирменный шрифт подставляется, когда догрузится (или не подставляется вовсе). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>%E2%9B%8F</text></svg>">
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<header>
+  <div class="logo">⛏ MODPACK BUILDER <span>v{{ api_version }}</span></div>
+  <div class="header-right">
+    <div class="conn" id="connIndicator" title="Соединение с приложением">
+      <span class="conn-dot"></span><span id="connText">связь</span>
+    </div>
+    <span class="badge" id="headerBadge">0 МОДОВ</span>
+    <button id="clearBtn" class="danger" style="font-size:11px;padding:6px 12px;">🗑 Очистить всё</button>
+  </div>
+</header>
+
+<div class="main">
+  <section class="left">
+    <div class="add-bar">
+      <input type="text" id="modInput" autocomplete="off" spellcheck="false"
+             placeholder="Вставь ссылку или slug мода с Modrinth...">
+      <button class="primary" id="addBtn">+ ДОБАВИТЬ</button>
+    </div>
+
+    <div class="toolbar">
+      <input type="search" id="searchInput" autocomplete="off" spellcheck="false"
+             placeholder="Фильтр по названию или slug...">
+      <button id="refreshBtn" title="Заново получить версии MC и загрузчики из Modrinth">⟳ Метаданные</button>
+    </div>
+
+    <div class="section-title">Коллекция модов <span class="count" id="collectionCount"></span></div>
+
+    <div class="mod-list" id="modList">
+      <div class="empty-state">
+        <div class="icon">📦</div>
+        <p>Коллекция пуста.<br>Вставь ссылку на мод с Modrinth<br>или его slug (например: <b>sodium</b>)</p>
+      </div>
+    </div>
+
+    <div class="log" id="logBox"><div class="log-empty">Журнал пуст</div></div>
+  </section>
+
+  <aside class="right">
+    <div class="section-title">Статистика</div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label">ВСЕГО МОДОВ</div></div>
+      <div class="stat-box"><div class="stat-num" id="statCompat" style="color:var(--yellow)">0</div><div class="stat-label">СОВМЕСТИМЫХ</div></div>
+    </div>
+    <div class="loader-chips" id="loaderChips"></div>
+
+    <div class="filter-group">
+      <label class="filter-label" for="loaderSelect">Загрузчик</label>
+      <select id="loaderSelect">
+        <option value="">— Любой —</option>
+        <option value="fabric">Fabric</option>
+        <option value="forge">Forge</option>
+        <option value="neoforge">NeoForge</option>
+        <option value="quilt">Quilt</option>
+      </select>
+    </div>
+
+    <div class="section-title">Совместимые версии MC</div>
+    <div class="compat-grid" id="compatGrid"></div>
+    <div class="compat-hint" id="compatHint"></div>
+
+    <div class="export-section">
+      <div class="section-title">Экспорт</div>
+      <button class="primary" id="exportMrpack">💾 Экспорт .mrpack</button>
+      <button id="exportJson">📋 Экспорт JSON-списка</button>
+      <label style="display:block;width:100%">
+        <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+        <span class="import-btn" id="importBtn">📂 Импорт JSON</span>
+      </label>
+    </div>
+  </aside>
+</div>
+
+<script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+/* ===== Modpack Builder — стили, которые инжектятся в страницы modrinth.com =====
+   Правила:
+   • никаких внешних запросов (шрифты Google убраны, используется системный моноширинный стек);
+   • все селекторы начинаются с #mpb-… или .mpb-… — в стили Modrinth ничего не протекает;
+   • у инжектируемых элементов принудительно box-sizing: border-box,
+     чтобы кнопки не растягивали разметку карточек;
+   • !important не используется: специфичность обеспечена префиксом #mpb-widget.
+   ============================================================== */
+
+#mpb-widget,
+#mpb-widget *,
+#mpb-toast,
+.mpb-card-btn {
+  box-sizing: border-box;
+}
+
+/* ===== Плавающий виджет на странице проекта ===== */
+
+#mpb-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2147483000; /* выше всего на странице */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 12px 14px;
+  background: #0d0f0e;
+  border: 1px solid #2a3030;
+  border-left: 3px solid #4ade80;
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #e2e8e4;
+  text-align: left;
+  letter-spacing: normal;
+  text-transform: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(74, 222, 128, 0.05);
+  min-width: 260px;
+  max-width: 340px;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+  pointer-events: none;
+}
+
+#mpb-widget.mpb-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+#mpb-widget.mpb-added {
+  border-left-color: #4ade80;
+  background: #051a0e;
+}
+
+#mpb-widget.mpb-offline {
+  border-left-color: #6b7280;
+  opacity: 0.6;
+}
+
+#mpb-widget.mpb-offline.mpb-visible {
+  opacity: 0.6;
+}
+
+#mpb-widget.mpb-loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+#mpb-widget.mpb-loading.mpb-visible {
+  opacity: 0.7;
+}
+
+#mpb-widget .mpb-icon {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: grayscale(0);
+}
+
+#mpb-widget.mpb-offline .mpb-icon {
+  filter: grayscale(1);
+}
+
+#mpb-widget .mpb-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+#mpb-widget .mpb-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #4ade80;
+  white-space: nowrap;
+}
+
+#mpb-widget.mpb-offline .mpb-label {
+  color: #6b7280;
+}
+
+#mpb-widget .mpb-sub {
+  font-size: 11px;
+  color: #9ca3a0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* Кнопки виджета */
+#mpb-widget .mpb-btn {
+  flex-shrink: 0;
+  background: #1c201e;
+  border: 1px solid #2a3030;
+  color: #e2e8e4;
+  padding: 5px 10px;
+  margin: 0;
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+
+#mpb-widget .mpb-btn:hover {
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+#mpb-widget .mpb-btn-add {
+  background: #4ade80;
+  color: #000;
+  border-color: #4ade80;
+}
+
+#mpb-widget .mpb-btn-add:hover {
+  background: #86efac;
+  border-color: #86efac;
+  color: #000;
+}
+
+#mpb-widget .mpb-btn-remove:hover {
+  border-color: #f87171;
+  color: #f87171;
+}
+
+#mpb-widget .mpb-btn:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+/* ===== Тост ===== */
+
+#mpb-toast {
+  position: fixed;
+  bottom: 108px;
+  right: 24px;
+  z-index: 2147483000;
+  margin: 0;
+  padding: 8px 14px;
+  background: #0d0f0e;
+  border: 1px solid #2a3030;
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.3;
+  color: #e2e8e4;
+  letter-spacing: normal;
+  text-transform: none;
+  max-width: 380px;
+  transform: translateY(10px);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  /* текст + необязательная кнопка «Отменить» */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#mpb-toast.mpb-toast-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#mpb-toast .mpb-toast-text {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+#mpb-toast .mpb-toast-action {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 3px 9px;
+  background: transparent;
+  border: 1px solid #4ade80;
+  border-radius: 3px;
+  color: #4ade80;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-transform: none;
+  cursor: pointer;
+}
+
+#mpb-toast .mpb-toast-action:hover {
+  background: #4ade80;
+  color: #000;
+}
+
+#mpb-toast.mpb-toast-ok { border-left: 3px solid #4ade80; }
+#mpb-toast.mpb-toast-error { border-left: 3px solid #f87171; }
+#mpb-toast.mpb-toast-warn { border-left: 3px solid #fbbf24; }
+
+/* ===== Значок на карточке мода ===== */
+
+.mpb-card-btn {
+  /* компактный: не переносит содержимое карточки и не растягивает её */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 22px;
+  margin: 0;
+  padding: 2px 7px;
+  background: #1c201e;
+  border: 1px solid #2a3030;
+  border-radius: 4px;
+  color: #e2e8e4;
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+/* Вариант A: абсолютное позиционирование в правом верхнем углу карточки */
+.mpb-card-btn.mpb-card-btn-abs {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
+}
+
+/* Вариант B: вставка в существующую строку действий карточки */
+.mpb-card-btn.mpb-card-btn-inline {
+  position: relative;
+  flex: 0 0 auto;
+  align-self: center;
+  margin: 0 0 0 4px;
+  z-index: 5;
+}
+
+.mpb-card-btn:hover {
+  border-color: #4ade80;
+  color: #4ade80;
+  background: #0d0f0e;
+}
+
+.mpb-card-btn.mpb-added {
+  background: #052e16;
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+.mpb-card-btn.mpb-added:hover {
+  border-color: #f87171;
+  color: #f87171;
+  background: #1a0505;
+}
+
+/* Видимое состояние загрузки (идёт запрос к приложению) */
+.mpb-card-btn.mpb-loading {
+  color: #fbbf24;
+  border-color: #fbbf24;
+  cursor: progress;
+  animation: mpb-pulse 1s ease-in-out infinite;
+}
+
+.mpb-card-btn.mpb-loading:disabled {
+  opacity: 1;
+}
+
+@keyframes mpb-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+/* ===== Уважаем настройку «уменьшить движение» ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  #mpb-widget,
+  #mpb-toast,
+  .mpb-card-btn {
+    transition: none;
+  }
+
+  #mpb-widget {
+    transform: none;
+  }
+
+  #mpb-toast {
+    transform: none;
+  }
+
+  .mpb-card-btn.mpb-loading {
+    animation: none;
+  }
+}
